@@ -1,0 +1,27 @@
+# roles/nginx/tasks/main.yml
+---
+- name: Install nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Deploy nginx config from template
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-available/default
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart nginx
+
+- name: Enable nginx site
+  file:
+    src: /etc/nginx/sites-available/default
+    dest: /etc/nginx/sites-enabled/default
+    state: link
+
+- name: Ensure nginx is started and enabled
+  service:
+    name: nginx
+    state: started
+    enabled: yes

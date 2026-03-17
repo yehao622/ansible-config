@@ -1,0 +1,7 @@
+*.tar.gz
+*.retry
+.DS_Store
+*.pem
+*.key
+inventory.ini
+vars/secrets.yml

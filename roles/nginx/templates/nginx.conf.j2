@@ -1,0 +1,18 @@
+{# roles/nginx/templates/nginx.conf.j2 #}
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html index.htm;
+
+    server_name _;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    access_log /var/log/nginx/access.log;
+    error_log  /var/log/nginx/error.log;
+}
+

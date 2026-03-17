@@ -1,0 +1,21 @@
+# setup.yml
+---
+- name: Configure GCP Linux Server
+  hosts: webservers
+  become: yes
+
+  vars:
+    app_dir: /var/www/html
+    ssh_public_key: "{{ lookup('file', '~/.ssh/gcp_ansible.pub') }}"
+    configure_ufw: true
+
+  roles:
+    - role: base
+      tags: base
+    - role: nginx
+      tags: nginx
+    - role: app
+      tags: app
+    - role: ssh
+      tags: ssh
+

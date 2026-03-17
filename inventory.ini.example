@@ -1,0 +1,6 @@
+# inventory.ini <-- rename to this name, and update your server ip, username, and ssh key
+[webservers]
+YOUR_SERVER_IP ansible_user=YOUR_SSH_USER ansible_ssh_private_key_file=~/.ssh/YOUR_KEY
+
+[webservers:vars]
+ansible_python_interpreter=/usr/bin/python3

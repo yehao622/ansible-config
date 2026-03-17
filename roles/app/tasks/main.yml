@@ -1,0 +1,30 @@
+# roles/app/tasks/main.yml
+---
+- name: Ensure web root directory exists
+  file:
+    path: /var/www/html
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Upload website tarball to server
+  copy:
+    src: website.tar.gz
+    dest: /tmp/website.tar.gz
+    owner: root
+    mode: '0644'
+
+- name: Extract website tarball into web root
+  unarchive:
+    src: /tmp/website.tar.gz
+    dest: /var/www/html
+    remote_src: yes
+    owner: www-data
+    group: www-data
+
+- name: Clean up tarball
+  file:
+    path: /tmp/website.tar.gz
+    state: absent
+
