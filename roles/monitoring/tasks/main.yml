@@ -1,0 +1,39 @@
+# roles/monitoring/tasks/main.yml
+---
+- name: Install Docker dependencies
+  apt:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+    state: present
+
+- name: Install docker.io
+  apt:
+    name: docker.io
+    state: present
+
+- name: Ensure Docker is started
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Install Docker Compose v2 plugin
+  apt:
+    name: docker-compose-v2
+    state: present
+
+- name: Copy monitoring stack to server
+  copy:
+    src: monitoring/
+    dest: /opt/monitoring/
+    owner: root
+    mode: '0644'
+
+- name: Start monitoring stack with docker-compose
+  command: docker compose up -d
+  args:
+    chdir: /opt/monitoring
+

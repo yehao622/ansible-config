@@ -1,0 +1,23 @@
+---
+- name: Stop system nginx (port 80 needed by blue-green)
+  service:
+    name: nginx
+    state: stopped
+    enabled: no
+
+- name: Copy blue-green stack to server
+  copy:
+    src: blue-green/
+    dest: /opt/blue-green/
+    owner: root
+    mode: '0755'
+
+- name: Set switch.sh as executable
+  file:
+    path: /opt/blue-green/switch.sh
+    mode: '0755'
+
+- name: Start blue-green stack
+  command: docker compose up -d
+  args:
+    chdir: /opt/blue-green
