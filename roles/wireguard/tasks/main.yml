@@ -1,0 +1,60 @@
+# roles/wireguard/tasks/main.yml
+---
+- name: Install WireGuard
+  apt:
+    name: wireguard
+    state: present
+    update_cache: yes
+
+- name: Ensure /etc/wireguard directory exists
+  file:
+    path: /etc/wireguard
+    state: directory
+    mode: '0700'
+    owner: root
+
+- name: Generate server private key if not exists
+  shell: wg genkey | tee /etc/wireguard/server_private.key | wg pubkey > /etc/wireguard/server_public.key
+  args:
+    creates: /etc/wireguard/server_private.key   # ← only runs if file doesn't exist
+                                                  #   makes task idempotent!
+
+- name: Set strict permissions on private key
+  file:
+    path: /etc/wireguard/server_private.key
+    mode: '0600'
+    owner: root
+
+- name: Read server private key into variable
+  slurp:
+    src: /etc/wireguard/server_private.key
+  register: server_private_key               # ← stores file content in memory
+                                             #   never written back to disk
+
+- name: Deploy wg0.conf from template
+  template:
+    src: wg0.conf.j2
+    dest: /etc/wireguard/wg0.conf
+    mode: '0600'
+    owner: root
+  notify: Restart WireGuard                  # ← triggers handler ONLY if config changed
+
+- name: Enable IP forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Allow WireGuard port through UFW
+  ufw:
+    rule: allow
+    port: "{{ wireguard_port }}"
+    proto: udp
+
+- name: Enable and start WireGuard
+  systemd:
+    name: "wg-quick@{{ wireguard_interface }}"
+    state: started
+    enabled: yes

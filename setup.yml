@@ -22,4 +22,5 @@
       tags: monitoring
     - role: blue-green
       tags: blue-green
-
+    - role: wireguard
+      tags: wireguard

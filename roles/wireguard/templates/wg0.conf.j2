@@ -1,0 +1,16 @@
+# roles/wireguard/templates/wg0.conf.j2
+[Interface]
+Address = {{ wireguard_server_ip }}
+ListenPort = {{ wireguard_port }}
+PrivateKey = {{ server_private_key.content | b64decode | trim }}
+
+PostUp = iptables -A FORWARD -i {{ wireguard_interface }} -j ACCEPT; iptables -A FORWARD -o {{ wireguard_interface }} -j ACCEPT; iptables -t nat -A POSTROUTING -o {{ wireguard_network_interface }} -j MASQUERADE
+PostDown = iptables -D FORWARD -i {{ wireguard_interface }} -j ACCEPT; iptables -D FORWARD -o {{ wireguard_interface }} -j ACCEPT; iptables -t nat -D POSTROUTING -o {{ wireguard_network_interface }} -j MASQUERADE
+
+{% for peer in wireguard_peers %}
+[Peer]
+# {{ peer.name }}
+PublicKey = {{ peer.public_key }}
+AllowedIPs = {{ peer.allowed_ips }}
+
+{% endfor %}
