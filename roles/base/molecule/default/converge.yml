@@ -1,0 +1,11 @@
+# roles/base/molecule/default/converge.yml
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  vars:
+    configure_ufw: false    # disable UFW in test — Docker doesn't support it fully
+
+  roles:
+    - role: base

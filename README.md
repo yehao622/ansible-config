@@ -148,7 +148,7 @@ A WireGuard VPN server is configured on the GCP VM, enabling secure encrypted tu
 ## 📈 Roadmap
 
 - [x] Add dedicated `roles/wireguard` for fully automated VPN provisioning ✅
-- [ ] Add GitHub Actions CI to lint playbooks with `ansible-lint`
+- [x] Add GitHub Actions CI to lint playbooks with `ansible-lint` ✅
 - [ ] Add `molecule` tests for role validation
 - [ ] Add SSL/TLS automation with Certbot (Let's Encrypt)
 - [ ] Expand monitoring stack with alerting rules

@@ -41,3 +41,31 @@ jobs:
         run: |
           pip install yamllint
           yamllint -d relaxed .
+
+  molecule:
+    name: Molecule Tests
+    runs-on: ubuntu-latest
+    needs: lint
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Molecule and dependencies
+        run: |
+          pip install ansible molecule molecule-plugins[docker] docker
+
+      - name: Install Ansible collections
+        run: |
+          ansible-galaxy collection install ansible.posix
+          ansible-galaxy collection install community.general
+
+      - name: Run Molecule tests for base role
+        run: |
+          cd roles/base
+          molecule test

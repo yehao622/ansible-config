@@ -1,0 +1,37 @@
+# roles/base/molecule/default/verify.yml
+---
+- name: Verify base role
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Check curl is installed
+      ansible.builtin.command: which curl
+      changed_when: false
+      register: curl_check
+
+    - name: Assert curl exists
+      ansible.builtin.assert:
+        that: curl_check.rc == 0
+        fail_msg: "curl is not installed!"
+        success_msg: "curl is installed ✅"
+
+    - name: Check git is installed
+      ansible.builtin.command: which git
+      changed_when: false
+      register: git_check
+
+    - name: Assert git exists
+      ansible.builtin.assert:
+        that: git_check.rc == 0
+        fail_msg: "git is not installed!"
+        success_msg: "git is installed ✅"
+
+    - name: Check fail2ban service is running
+      ansible.builtin.service_facts:
+
+    - name: Assert fail2ban is enabled
+      ansible.builtin.assert:
+        that: "'fail2ban' in services"
+        fail_msg: "fail2ban is not running!"
+        success_msg: "fail2ban is running ✅"
