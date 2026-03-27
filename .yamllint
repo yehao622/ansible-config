@@ -7,3 +7,4 @@ rules:
     max: 1
     level: warning
   trailing-spaces: enable   # keep this as error — catches real mistakes
+  comments-indentation: disable
