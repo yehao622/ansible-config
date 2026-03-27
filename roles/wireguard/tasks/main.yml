@@ -14,7 +14,7 @@
     owner: root
 
 - name: Generate server private key if not exists
-  ansible.builtin.shell: 
+  ansible.builtin.shell:
     cmd: wg genkey | tee /etc/wireguard/server_private.key | wg pubkey > /etc/wireguard/server_public.key
     executable: /bin/bash
   args:
