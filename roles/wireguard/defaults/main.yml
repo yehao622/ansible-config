@@ -9,6 +9,6 @@ wireguard_peers:
   - name: laptop
     public_key: "JC4/JbHwFlawmkNI7TD2hqEc1vxAvePAaIZhaZrHcQ8="
     allowed_ips: "10.0.0.2/32"
-  # - name: phone
-  #   public_key: "{{ lookup('file', '/etc/wireguard/phone_public.key') }}"
-  #   allowed_ips: "10.0.0.3/32"
+  #- name: phone
+  #  public_key: "{{ lookup('file', '/etc/wireguard/phone_public.key') }}"
+  #  allowed_ips: "10.0.0.3/32"
