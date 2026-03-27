@@ -16,7 +16,7 @@ jobs:
     steps:
       # Step 1 - Check out your repo code onto the runner
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # Step 2 - Install Python (ansible-lint needs it)
       - name: Set up Python

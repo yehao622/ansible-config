@@ -15,7 +15,7 @@
 
 - name: Generate server private key if not exists
   ansible.builtin.shell:
-    cmd: wg genkey | tee /etc/wireguard/server_private.key | wg pubkey > /etc/wireguard/server_public.key
+    cmd: set -o pipefail && wg genkey | tee /etc/wireguard/server_private.key | wg pubkey > /etc/wireguard/server_public.key
     executable: /bin/bash
   args:
     creates: /etc/wireguard/server_private.key   # ← only runs if file doesn't exist
