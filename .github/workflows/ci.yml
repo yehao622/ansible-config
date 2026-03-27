@@ -6,7 +6,7 @@ on:
   push:
     branches: [ main ]     # on every push to main
   pull_request:
-    branches: [ main ]    # on every PR targeting main    
+    branches: [ main ]    # on every PR targeting main
 
 jobs:
   lint:
