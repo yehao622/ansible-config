@@ -14,10 +14,12 @@
     owner: root
 
 - name: Generate server private key if not exists
-  shell: wg genkey | tee /etc/wireguard/server_private.key | wg pubkey > /etc/wireguard/server_public.key
+  ansible.builtin.shell: 
+    cmd: wg genkey | tee /etc/wireguard/server_private.key | wg pubkey > /etc/wireguard/server_public.key
+    executable: /bin/bash
   args:
     creates: /etc/wireguard/server_private.key   # ← only runs if file doesn't exist
-                                                  #   makes task idempotent!
+  changed_when: false                                                #   makes task idempotent!
 
 - name: Set strict permissions on private key
   file:
@@ -26,9 +28,9 @@
     owner: root
 
 - name: Read server private key into variable
-  slurp:
+  ansible.builtin.slurp:
     src: /etc/wireguard/server_private.key
-  register: server_private_key               # ← stores file content in memory
+  register: wireguard_server_private_key               # ← stores file content in memory
                                              #   never written back to disk
 
 - name: Deploy wg0.conf from template

@@ -18,6 +18,7 @@
     mode: '0755'
 
 - name: Start blue-green stack
-  command: docker compose up -d
+  ansible.builtin.command: docker compose up -d
   args:
     chdir: /opt/blue-green
+  changed_when: false

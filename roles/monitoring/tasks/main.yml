@@ -33,7 +33,7 @@
     mode: '0644'
 
 - name: Start monitoring stack with docker-compose
-  command: docker compose up -d
+  ansible.builtin.command: docker compose up -d
   args:
     chdir: /opt/monitoring
-
+  changed_when: false
