@@ -1,0 +1,8 @@
+warn_list:
+  - experimental
+
+skip_list:
+  - fqcn                  # skip FQCN requirement for now
+  - yaml[truthy]          # skip yes/no → true/false for now
+  - yaml[empty-lines]     # skip blank line warnings
+  - command-instead-of-module  # skip command/shell warnings
