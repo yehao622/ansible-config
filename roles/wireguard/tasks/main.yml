@@ -31,7 +31,7 @@
   ansible.builtin.slurp:
     src: /etc/wireguard/server_private.key
   register: wireguard_server_private_key               # ← stores file content in memory
-                                             #   never written back to disk
+  #   never written back to disk
 
 - name: Deploy wg0.conf from template
   template:
