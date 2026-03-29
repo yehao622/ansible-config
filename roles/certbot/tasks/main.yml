@@ -1,0 +1,58 @@
+---
+- name: Install snapd
+  ansible.builtin.apt:
+    name: snapd
+    state: present
+    update_cache: true
+
+- name: Ensure snapd is running
+  ansible.builtin.service:
+    name: snapd
+    state: started
+    enabled: true
+
+- name: Install core snap
+  community.general.snap:
+    name: core
+    state: present
+
+- name: Refresh core snap
+  ansible.builtin.command:
+    cmd: snap refresh core
+  changed_when: false
+
+- name: Remove apt certbot if exists
+  ansible.builtin.apt:
+    name: certbot
+    state: absent
+
+- name: Install certbot via snap
+  community.general.snap:
+    name: certbot
+    state: present
+    classic: true
+
+- name: Symlink certbot to /usr/bin
+  ansible.builtin.file:
+    src: /snap/bin/certbot
+    dest: /usr/bin/certbot
+    state: link
+    force: true
+
+- name: Obtain SSL certificate
+  ansible.builtin.command:
+    cmd: >
+      certbot --nginx
+      --non-interactive
+      --agree-tos
+      --email {{ certbot_email }}
+      --domain {{ certbot_domain }}
+  args:
+    creates: /etc/letsencrypt/live/{{ certbot_domain }}/fullchain.pem
+  notify: Reload Nginx
+
+- name: Ensure certbot auto-renewal timer is enabled
+  ansible.builtin.systemd:
+    name: snap.certbot.renew.timer
+    state: started
+    enabled: true

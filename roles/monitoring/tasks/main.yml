@@ -37,3 +37,4 @@
   args:
     chdir: /opt/monitoring
   changed_when: false
+

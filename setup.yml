@@ -24,3 +24,5 @@
       tags: blue-green
     - role: wireguard
       tags: wireguard
+    - role: certbot
+      tags: certbot
