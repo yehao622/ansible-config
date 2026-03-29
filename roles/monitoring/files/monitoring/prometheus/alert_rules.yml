@@ -8,7 +8,7 @@ groups:
           severity: critical
         annotations:
           summary: "Host {{ $labels.instance }} is down"
-          description: "{{ $label.instance }} has been unreachable for more than 1 minute."
+          description: "{{ $labels.instance }} has been unreachable for more than 1 minute."
 
       - alert: HighCpuUsage
         expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 80
