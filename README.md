@@ -2,7 +2,7 @@
 
 > 🚧 **Actively maintained** — This repo reflects my ongoing journey learning DevOps and infrastructure automation. New roles and improvements are added regularly.
 
-Automated provisioning and configuration management for a GCP Linux server using **Ansible**, covering security hardening, web serving, zero-downtime deployments, monitoring, and VPN setup.
+Automated provisioning and configuration management for a GCP Linux server using **Ansible**, covering security hardening, web serving, zero-downtime deployments, SSL/TLS automation, monitoring with alerting, and VPN setup.
 
 ---
 
@@ -17,8 +17,9 @@ GCP VM — Ubuntu (Managed Node)
         ├── UFW Firewall (ports 22, 80, 443, 51820)
         ├── fail2ban (brute-force protection)
         ├── Nginx (reverse proxy / web server)
+        ├── Certbot (Let's Encrypt SSL/TLS — auto-renewing)
         ├── Docker + Docker Compose
-        │     ├── Monitoring Stack (Prometheus / Grafana)
+        │     ├── Monitoring Stack (Prometheus / Grafana / Alertmanager)
         │     └── Blue-Green Deployment Stack
         └── WireGuard VPN (multi-peer, UDP 51820)
 ```
@@ -38,7 +39,9 @@ ansible-config/
     ├── app/                   # Application deployment
     ├── ssh/                   # SSH key injection & hardening
     ├── monitoring/            # Docker-based monitoring stack
-    └── blue-green/            # Zero-downtime blue-green deployment
+    ├── blue-green/            # Zero-downtime blue-green deployment
+    ├── wireguard/             # WireGuard VPN provisioning
+    └── certbot/               # SSL/TLS automation via Let's Encrypt
 ```
 
 ---
@@ -56,6 +59,12 @@ ansible-config/
 - Enables the site via symlink (`sites-available` → `sites-enabled`)
 - Uses Ansible **handlers** to restart Nginx only on config changes
 
+### `certbot` — SSL/TLS Automation
+- Installs Certbot via snap (recommended by Let's Encrypt)
+- Obtains a TLS certificate for the domain from Let's Encrypt non-interactively
+- Configures Nginx for HTTPS automatically
+- Enables `snap.certbot.renew.timer` for fully automated 90-day certificate renewal
+
 ### `ssh` — SSH Key Hardening
 - Ensures `.ssh` directory exists with strict `0700` permissions
 - Injects SSH public key into `authorized_keys` using the `authorized_key` module
@@ -63,13 +72,24 @@ ansible-config/
 
 ### `monitoring` — Docker-Based Monitoring Stack
 - Installs Docker (`docker.io`) and Docker Compose v2 plugin
-- Copies and launches a monitoring stack (Prometheus / Grafana) via `docker compose up -d`
+- Deploys Prometheus, Grafana, Alertmanager, and node-exporter via `docker compose up -d`
 - Enables Docker service at boot for persistence across VM restarts
+- Includes 3 Prometheus alerting rules loaded from `alert_rules.yml`:
+  - `InstanceDown` — fires if a target is unreachable for > 1 minute (critical)
+  - `HighCpuUsage` — fires if CPU exceeds 80% for > 2 minutes (warning)
+  - `HighMemoryUsage` — fires if RAM exceeds 85% for > 2 minutes (warning)
 
 ### `blue-green` — Zero-Downtime Deployment
 - Implements **blue-green deployment** strategy to eliminate downtime during app updates
 - Copies deployment stack and `switch.sh` script to `/opt/blue-green/` on the server
 - Launches the stack with Docker Compose; traffic switching handled by `switch.sh`
+
+### `wireguard` — VPN Server
+- Installs WireGuard and provisions a VPN server on the GCP VM (`10.0.0.1`, UDP `51820`)
+- Generates server keypair and deploys `wg0.conf` via Ansible template
+- Configures UFW rule for `51820/udp` and iptables NAT masquerading
+- Multi-peer support: laptop (`10.0.0.2`), additional devices (`10.0.0.3+`)
+- Enables and starts `wg-quick@wg0` service for persistence across reboots
 
 ### `app` — Application Deployment
 - Deploys application files to `/var/www/html` on the managed node
@@ -101,7 +121,12 @@ ansible-playbook -i inventory.ini setup.yml --tags base
 ansible-playbook -i inventory.ini setup.yml --tags nginx,app
 ansible-playbook -i inventory.ini setup.yml --tags monitoring
 ansible-playbook -i inventory.ini setup.yml --tags blue-green
+ansible-playbook -i inventory.ini setup.yml --tags blue-green
 ```
+
+🧪 Testing & CI
+  GitHub Actions runs ansible-lint on every push to validate all playbooks and roles
+  Molecule tests the base role in an isolated environment to verify idempotency and task correctness
 
 ---
 
@@ -112,36 +137,26 @@ ansible-playbook -i inventory.ini setup.yml --tags blue-green
 - UFW configured with **default-deny** policy — only explicitly allowed ports are open
 - `fail2ban` blocks repeated failed SSH login attempts automatically
 - WireGuard uses **public key cryptography** — pre-shared keys never transmitted in plaintext
-
----
-
-## 🌐 WireGuard VPN (Manual Setup — Ansible Role In Progress)
-
-A WireGuard VPN server is configured on the GCP VM, enabling secure encrypted tunneling from any client device.
-
-**Current setup (manually verified working):**
-- Server: GCP VM (`10.0.0.1`) listening on UDP `51820`
-- Client 1: Laptop (`10.0.0.2`) — full tunnel (`0.0.0.0/0`), routes all traffic through GCP
-- Multi-peer support ready (phone, additional devices on `10.0.0.3+`)
-- UFW rule for `51820/udp` and `iptables` MASQUERADE for NAT configured
-
-> 📌 **Planned**: Migrate WireGuard setup into a dedicated Ansible role (`roles/wireguard`) for fully automated provisioning.
+- HTTPS enforced via Let's Encrypt certificate with automated renewal
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Category | Tools |
-|---|---|
-| Infrastructure | Google Cloud Platform (GCP) |
-| Configuration Management | Ansible |
-| Web Server | Nginx |
-| Containerization | Docker, Docker Compose v2 |
-| Monitoring | Prometheus, Grafana |
-| VPN | WireGuard |
-| Firewall | UFW, iptables |
-| Security | fail2ban, SSH key auth |
-| OS | Ubuntu 20.04+ |
+| Category                 | Tools                                            |
+| ------------------------ | ------------------------------------------------ |
+| Infrastructure           | Google Cloud Platform (GCP)                      |
+| Configuration Management | Ansible                                          |
+| Web Server               | Nginx                                            |
+| SSL/TLS                  | Certbot, Let's Encrypt                           |
+| Containerization         | Docker, Docker Compose v2                        |
+| Monitoring               | Prometheus, Grafana, Alertmanager, node-exporter |
+| VPN                      | WireGuard                                        |
+| Firewall                 | UFW, iptables                                    |
+| Security                 | fail2ban, SSH key auth                           |
+| CI                       | GitHub Actions (ansible-lint)                    |
+| Testing                  | Molecule                                         |
+| OS                       | Ubuntu 20.04+                                    |
 
 ---
 
