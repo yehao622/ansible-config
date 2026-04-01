@@ -4,8 +4,7 @@
 *.pem
 *.key
 inventory.ini
-terraform-sa-key.json
+terraform/terraform-sa-key.json
 terraform/.terraform/
-terraform.tfstate*
-.terraform.lock.hcl
+terraform/terraform.tfstate*
 vars/secrets.yml
