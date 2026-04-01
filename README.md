@@ -12,7 +12,7 @@ Automated provisioning and configuration management for a GCP Linux server using
 Local Machine (Ansible Control Node)
         │
         │  SSH (key-based auth)
-        ▼
+             ▼
 GCP VM — Ubuntu (Managed Node)
         ├── UFW Firewall (ports 22, 80, 443, 51820)
         ├── fail2ban (brute-force protection)
@@ -120,7 +120,7 @@ ansible-playbook -i inventory.ini setup.yml
 ansible-playbook -i inventory.ini setup.yml --tags base
 ansible-playbook -i inventory.ini setup.yml --tags nginx,app
 ansible-playbook -i inventory.ini setup.yml --tags monitoring
-ansible-playbook -i inventory.ini setup.yml --tags blue-green
+ansible-playbook -i inventory.ini setup.yml --tags wireguard
 ansible-playbook -i inventory.ini setup.yml --tags blue-green
 ```
 
