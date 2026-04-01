@@ -11,7 +11,7 @@ variable "zone" {
   default = "us-west1-b"
 }
 
-variable "ssh_public_key_path" {
-  description = "Path to your SSH public key"
-  default     = "~/.ssh/id_rsa.pub"
+variable "ssh_public_key" {
+  description = "SSH public key content"
+  type        = string
 }

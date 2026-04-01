@@ -30,7 +30,10 @@ jobs:
 
       - name: Terraform Apply
         working-directory: terraform/
-        run: terraform apply -auto-approve -var="project_id=ansible-linux"
+        run: |
+          terraform apply -auto-approve \
+            -var="project_id=ansible-linux" \
+            -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}"
 
       - name: Get VM IP
         id: get_ip

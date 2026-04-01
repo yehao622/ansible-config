@@ -32,7 +32,7 @@ resource "google_compute_instance" "ansible_vm" {
   }
 
   metadata = {
-    ssh-keys = "hao:${file(var.ssh_public_key_path)}"
+    ssh-keys = "hao:${var.ssh_public_key}"
   }
 
   tags = ["ansible-target"]
