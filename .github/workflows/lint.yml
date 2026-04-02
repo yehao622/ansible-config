@@ -1,2 +1,0 @@
-- name: Write vault password
-  run: echo "${{ secrets.VAULT_PASSWORD }}" > ~/.vault_pass
