@@ -1,4 +1,8 @@
 terraform {
+  backend "gcs" {
+    bucket = "ansible-linux-tfstate"
+    prefix = "terraform/state"
+  }
   required_providers {
     google = {
       source  = "hashicorp/google"
