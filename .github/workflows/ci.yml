@@ -16,7 +16,7 @@ jobs:
     steps:
       # Step 1 - Check out your repo code onto the runner
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       # Step 2 - Install Python (ansible-lint needs it)
       - name: Set up Python
@@ -24,21 +24,20 @@ jobs:
         with:
           python-version: '3.12'
 
-      # Step 3 — Install ansible-lint
+      # Step 3 — Install ansible-lint and collections
       - name: Install ansible-lint and collections
         run: |
-          pip install ansible-lint
+          pip install ansible ansible-lint
           ansible-galaxy collection install ansible.posix
           ansible-galaxy collection install community.general
 
-      # Step 4 — Lint the master playbook + all roles
-      - name: Run ansible-lint
-        run: |
-          ansible-lint setup.yml
-
-      # Step 5 - Ansible vault config
+      # Step 4 — Write vault password BEFORE linting (required to decrypt vault files)
       - name: Write vault password file
         run: echo "${{ secrets.VAULT_PASSWORD }}" > ~/.vault_pass
+
+      # Step 5 — Lint the master playbook + all roles
+      - name: Run ansible-lint
+        run: ansible-lint setup.yml
 
       # Step 6 — Validate YAML syntax on all files
       - name: Validate YAML syntax
@@ -53,7 +52,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -68,6 +67,10 @@ jobs:
         run: |
           ansible-galaxy collection install ansible.posix
           ansible-galaxy collection install community.general
+
+      # Write vault password for molecule tests too
+      - name: Write vault password file
+        run: echo "${{ secrets.VAULT_PASSWORD }}" > ~/.vault_pass
 
       - name: Run Molecule tests for base role
         run: |
