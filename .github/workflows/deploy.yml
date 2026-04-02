@@ -63,6 +63,11 @@ jobs:
           echo '${{ secrets.SSH_PRIVATE_KEY }}' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
+      - name: Write Vault Password
+        run: |
+          echo '${{ secrets.ANSIBLE_VAULT_PASSWORD }}' > ~/.vault_pass
+          chmod 600 ~/.vault_pass
+
       - name: Wait for VM SSH to be ready
         run: |
           sleep 30   # give the VM time to boot
