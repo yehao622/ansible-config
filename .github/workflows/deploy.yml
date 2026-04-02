@@ -65,7 +65,7 @@ jobs:
 
       - name: Write Vault Password
         run: |
-          echo '${{ secrets.ANSIBLE_VAULT_PASSWORD }}' > ~/.vault_pass
+          printf '%s' '${{ secrets.ANSIBLE_VAULT_PASSWORD }}' > ~/.vault_pass
           chmod 600 ~/.vault_pass
 
       - name: Wait for VM SSH to be ready

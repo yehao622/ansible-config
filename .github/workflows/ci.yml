@@ -33,7 +33,9 @@ jobs:
 
       # Step 4 — Write vault password BEFORE linting (required to decrypt vault files)
       - name: Write vault password file
-        run: echo "${{ secrets.VAULT_PASSWORD }}" > ~/.vault_pass
+        run: |
+          printf '%s' '${{ secrets.ANSIBLE_VAULT_PASSWORD }}' > ~/.vault_pass
+          chmod 600 ~/.vault_pass
 
       # Step 5 — Lint the master playbook + all roles
       - name: Run ansible-lint
@@ -68,9 +70,10 @@ jobs:
           ansible-galaxy collection install ansible.posix
           ansible-galaxy collection install community.general
 
-      # Write vault password for molecule tests too
       - name: Write vault password file
-        run: echo "${{ secrets.VAULT_PASSWORD }}" > ~/.vault_pass
+        run: |
+          printf '%s' '${{ secrets.ANSIBLE_VAULT_PASSWORD }}' > ~/.vault_pass
+          chmod 600 ~/.vault_pass
 
       - name: Run Molecule tests for base role
         run: |
