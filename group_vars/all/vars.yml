@@ -1,0 +1,5 @@
+wireguard_server_privkey: "{{ vault_wireguard_server_privkey }}"
+wireguard_peer1_pubkey:   "{{ vault_wireguard_peer1_pubkey }}"
+wireguard_peer2_pubkey:   "{{ vault_wireguard_peer2_pubkey }}"
+grafana_admin_password:   "{{ vault_grafana_admin_password }}"
+certbot_email:            "{{ vault_certbot_email }}"

@@ -3,6 +3,7 @@
 .DS_Store
 *.pem
 *.key
+.vault_pass
 inventory.ini
 terraform/terraform-sa-key.json
 terraform/.terraform/

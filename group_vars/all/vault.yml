@@ -1,0 +1,6 @@
+# group_vars/all/vault.yml  (encrypted — safe to commit)
+vault_wireguard_server_privkey: "sIQBNOwarqYYGKDF3NN8tPUFITh9ZsBm294U/xVNG0c="
+vault_wireguard_peer1_pubkey:   "JC4/JbHwFlawmkNI7TD2hqEc1vxAvePAaIZhaZrHcQ8="
+vault_wireguard_peer2_pubkey:   "n8FpMqWBGp46JUAK9agsAxJ0xEy8/GFqUYo3gvkLIgE="
+vault_grafana_admin_password:   "admin123"
+vault_certbot_email:            "yeahaur@gmail.com"
