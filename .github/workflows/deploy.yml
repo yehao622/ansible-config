@@ -11,6 +11,9 @@ jobs:
     outputs:
       vm_ip: ${{ steps.get_ip.outputs.vm_ip }}
 
+    env:
+      GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
