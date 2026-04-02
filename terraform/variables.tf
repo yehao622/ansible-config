@@ -1,6 +1,7 @@
 variable "project_id" {
-  description = "ansible-linux"
+  description = "GCP project ID"
   type        = string
+  default     = "ansible-linux"
 }
 
 variable "region" {
