@@ -2,7 +2,8 @@
 [Interface]
 Address = {{ wireguard_server_ip }}
 ListenPort = {{ wireguard_port }}
-PrivateKey = {{ wireguard_server_private_key.content | b64decode | trim }}
+PrivateKey = {{ wireguard_server_privkey }}
+#PrivateKey = {{ wireguard_server_private_key.content | b64decode | trim }}
 
 PostUp = iptables -A FORWARD -i {{ wireguard_interface }} -j ACCEPT; iptables -A FORWARD -o {{ wireguard_interface }} -j ACCEPT; iptables -t nat -A POSTROUTING -o {{ wireguard_network_interface }} -j MASQUERADE
 PostDown = iptables -D FORWARD -i {{ wireguard_interface }} -j ACCEPT; iptables -D FORWARD -o {{ wireguard_interface }} -j ACCEPT; iptables -t nat -D POSTROUTING -o {{ wireguard_network_interface }} -j MASQUERADE

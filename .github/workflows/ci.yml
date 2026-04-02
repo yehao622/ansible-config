@@ -36,7 +36,11 @@ jobs:
         run: |
           ansible-lint setup.yml
 
-      # Step 5 — Validate YAML syntax on all files
+      # Step 5 - Ansible vault config
+      - name: Write vault password file
+        run: echo "${{ secrets.VAULT_PASSWORD }}" > ~/.vault_pass
+
+      # Step 6 — Validate YAML syntax on all files
       - name: Validate YAML syntax
         run: |
           pip install yamllint

@@ -74,6 +74,7 @@ ansible-config/
 - Installs Docker (`docker.io`) and Docker Compose v2 plugin
 - Deploys Prometheus, Grafana, Alertmanager, and node-exporter via `docker compose up -d`
 - Enables Docker service at boot for persistence across VM restarts
+- Ensures `/etc/prometheus` directory exists with correct ownership before copying alert rules (idempotent `file` task)
 - Includes 3 Prometheus alerting rules loaded from `alert_rules.yml`:
   - `InstanceDown` — fires if a target is unreachable for > 1 minute (critical)
   - `HighCpuUsage` — fires if CPU exceeds 80% for > 2 minutes (warning)

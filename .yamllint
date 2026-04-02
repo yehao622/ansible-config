@@ -1,5 +1,12 @@
 extends: default
 rules:
+  comments:
+    min-spaces-from-content: 1
+  braces:
+    max-spaces-inside: 1
+  octal-values:
+    forbid-implicit-octal: true
+    forbid-explicit-octal: true
   line-length:
     max: 160          # increase from 80 to 160 — WireGuard lines are long
     level: warning    # warning only, not error
