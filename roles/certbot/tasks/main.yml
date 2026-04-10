@@ -56,3 +56,15 @@
     name: snap.certbot.renew.timer
     state: started
     enabled: true
+
+- name: Install curl (required for DuckDNS updater)
+  apt:
+    name: curl
+    state: present
+
+- name: Set up DuckDNS auto-update cron job
+  cron:
+    name: "duckdns update"
+    minute: "*/5"
+    job: "curl -s 'https://www.duckdns.org/update?domains=haoansible&token={{ duckdns_token }}&ip=' > /dev/null 2>&1"
+    user: ansible

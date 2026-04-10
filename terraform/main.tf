@@ -2,6 +2,7 @@ terraform {
   backend "gcs" {
     bucket = "ansible-linux-tfstate"
     prefix = "terraform/state"
+    credentials = "./terraform-sa-key.json"
   }
   required_providers {
     google = {
@@ -19,7 +20,7 @@ provider "google" {
 }
 
 resource "google_compute_instance" "ansible_vm" {
-  name         = "ansible-server"
+  name         = "ansible-target"
   machine_type = "e2-micro"
   zone         = var.zone
 
@@ -49,7 +50,7 @@ resource "google_compute_firewall" "allow_ssh_monitoring" {
 
   allow {
     protocol = "tcp"
-    ports    = ["22", "9090", "3000", "9093", "9100"]
+    ports    = ["22", "9090", "3000", "9093", "9100", "3100"]
   }
 
   source_ranges = ["0.0.0.0/0"]
