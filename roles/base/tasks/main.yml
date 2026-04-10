@@ -48,6 +48,24 @@
     port: "443"
     proto: tcp
 
+- name: Configure UFW — allow Grafana
+  ufw:
+    rule: allow
+    port: "3000"
+    proto: tcp
+
+- name: Configure UFW — allow Prometheus
+  ufw:
+    rule: allow
+    port: "9090"
+    proto: tcp
+
+- name: Configure UFW — allow Alertmanager
+  ufw:
+    rule: allow
+    port: "9093"
+    proto: tcp
+
 - name: Enable UFW
   ufw:
     state: enabled
